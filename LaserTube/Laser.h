@@ -12,12 +12,16 @@ extern byte fire;
 
 
 void setupLaser(void); // function to setup laser
-void fireLaser(void);
-void keepOnLasing(void); // function to update laser
+void fireLaser(void); //called by web  / button interface to change state
+void keepOnLasing(void); // function to update laser //todo
+
+// Laser Scenes
+// Each function defines a state with an accompanying animation
 void sceneIdle(void); // idle loop when nothing is happening
-void sceneFiring(void); // firing scence
-void sceneCharged(void);
-void scenceCharging(void);
+void scenceCharging(void); //
+void sceneCharged(void); //ready to be fired
+void sceneFiring(void); // firing scene
+
 void doScene(void);
 void doSoundLoop(void);
 void setScene(int sceneNum); 

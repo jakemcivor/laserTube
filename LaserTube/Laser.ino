@@ -29,7 +29,7 @@ byte frequency = 10;
 // PERIOD: Standby frequency period
 byte period = 4;
 
-// VOLUME: Sound volume
+// VOLUME: Sound volume. Range  0 - 30
 byte volume = 15;
 
 // BRIGHTNESS: Pixel Brightness
@@ -57,7 +57,7 @@ void fireLaser(void){
 }
 void Laser(void)
 {
-
+//todo laser energy charging model
 }
 
 
@@ -67,7 +67,7 @@ void keepOnLasing(void)
 //  if (millis() > laserTimer + 1000 / FRAMES_PER_SECOND)
 //  {
 //    laserTimer = millis();
-//    Laser();
+//    Laser(); //update model state (based on time)
 //    for (int i = 0; i < NUM_LEDS; i++)
 //    {
 //      pixels.setPixelColor(i, pixels.Color(leds[i].r, leds[i].g, leds[i].b));
@@ -79,7 +79,33 @@ void keepOnLasing(void)
 //  }
 }
 
+//////////////////////////////////////
+//////////////////////////////////////
+// IDLE SCENCE
+//////////////////////////////////////
+void sceneIdle() {
+    // idle loop when nothing else is happening
+  count++;
 
+  if (count % iterationCount == 0) {
+    Serial.println("-- idle");
+  }
+
+  if (sceneBrightness < 1) { pixels.setBrightness(1); sceneBrightness = 1; }
+
+  int iteration = count % iterationCount;
+  int lbrightness = (sceneBrightness < 72 ? sceneBrightness++ : map(iteration, 0, iterationCount, -72, 72));
+  int r = 0;
+  int g = 0; // abs(lbrightness);
+  int b = abs(lbrightness);; // 64;
+  for (int i = 0; i < NUM_LEDS; i++) {
+    pixels.setPixelColor(i, pixels.Color(r, g, b));
+    delay(0);
+  }
+
+  pixels.show(); //send updated pixel color to hardware
+
+}
 
 void sceneCharging() {
   // charging up animation
@@ -110,6 +136,11 @@ void sceneCharging() {
 
 }
 
+//////////////////////////////////////
+//////////////////////////////////////
+// Charging SCENE
+//////////////////////////////////////
+
 void sceneCharged() {
   // charged loop
   count++;
@@ -131,9 +162,9 @@ void sceneCharged() {
 
 //////////////////////////////////////
 //////////////////////////////////////
-// FIRING SCENCE
+// FIRING SCENE
 //////////////////////////////////////
-//////////////////////////////////////
+
 void sceneFiring() {
   // firing animation
   count++;
@@ -165,34 +196,7 @@ void sceneFiring() {
 }
 
 
-//////////////////////////////////////
-//////////////////////////////////////
-// IDLE SCENCE
-//////////////////////////////////////
-//////////////////////////////////////
-void sceneIdle() {
-    // idle loop when nothing else is happening
-  count++;
 
-  if (count % iterationCount == 0) {
-    Serial.println("-- idle");
-  }
-
-  if (sceneBrightness < 1) { pixels.setBrightness(1); sceneBrightness = 1; }
-
-  int iteration = count % iterationCount;
-  int lbrightness = (sceneBrightness < 72 ? sceneBrightness++ : map(iteration, 0, iterationCount, -72, 72));
-  int r = abs(lbrightness);
-  int g = 0; // abs(lbrightness);
-  int b = 0; // 64;
-  for (int i = 0; i < NUM_LEDS; i++) {
-    pixels.setPixelColor(i, pixels.Color(r, g, b));
-    delay(0);
-  }
-
-  pixels.show(); //send updated pixel color to hardware
-
-}
 
 void setScene(int sceneNum) {
     count = 0;
