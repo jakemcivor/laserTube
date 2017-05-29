@@ -51,9 +51,12 @@ void setupLaser(){
 
 
 void fireLaser(void){
-  setScene(SCENE_CHARGING);
 
-  //todo add state logic 
+  // if we are in idle state: fire; otherwise, do nothing
+  if (sceneState == SCENE_IDLE){
+    setScene(SCENE_CHARGING);
+  }
+
 }
 void Laser(void)
 {
@@ -138,7 +141,7 @@ void sceneCharging() {
 
 //////////////////////////////////////
 //////////////////////////////////////
-// Charging SCENE
+// Charged SCENE
 //////////////////////////////////////
 
 void sceneCharged() {
