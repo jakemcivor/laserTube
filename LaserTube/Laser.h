@@ -9,11 +9,14 @@ extern byte period;
 extern byte brightness;
 extern byte volume;
 extern byte fire;
+extern byte prettylights;
 
 
 void setupLaser(void); // function to setup laser
 void fireLaser(void); //called by web  / button interface to change state
 void keepOnLasing(void); // function to update laser //todo
+
+void prettyLights(void); //activate demo mode
 
 // Laser Scenes
 // Each function defines a state with an accompanying animation

@@ -20,6 +20,73 @@ void setupAP(){
   Serial.println("**** Access point started ");
 }
 
+void setupWiFi(void)
+{
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.println("Waiting to connect to wifi.");
+  }
+  Serial.println();
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void setupWebServer(void)
+{
+  webServer.on("/", []() {
+    Serial.print("HTTP REQUEST > ");
+
+    for (uint8_t i = 0; i < webServer.args(); i++)
+    {
+      if (webServer.argName(i) == "frequency")
+      {
+        frequency = (byte) webServer.arg(i).toInt();
+      }
+      else if (webServer.argName(i) == "period")
+      {
+        period = (byte) webServer.arg(i).toInt();
+      }
+      else if (webServer.argName(i) == "brightness")
+      {
+        brightness = (byte) webServer.arg(i).toInt();
+      }
+      else if (webServer.argName(i) == "volume")
+      {
+        volume = (byte) webServer.arg(i).toInt();
+        updateVolume(volume);
+      }
+      else if (webServer.argName(i) == "fire")
+      {
+        fireLaser();
+      }
+       else if (webServer.argName(i) == "prettylights")
+      {
+        prettylights = 1;
+        prettyLights();
+      }
+      else
+      {
+        Serial.println("unknown argument! ");
+      }
+      Serial.print(webServer.argName(i));
+      Serial.print(": ");
+      Serial.print(webServer.arg(i));
+      Serial.print(" > ");
+    }
+    Serial.println("done");
+
+    showControlScreen();
+  });
+
+  webServer.onNotFound(handleNotFound);
+
+  webServer.begin();
+  Serial.println("HTTP server started");
+}
 
 void showControlScreen(void)
 {
@@ -28,6 +95,9 @@ void showControlScreen(void)
   message += "<head><meta http-equiv=\"refresh\" content=\"20; url='/\"'><title>VHS Laser Tube Control</title></head>";
   message += "<body>";
   message += "<h3><a href=\"https://vanhack.ca\">VHS Laser Tube</a></h3>";
+  message += "<form action=\"/\" method=\"get\">";
+  message += "<input type=\"hidden\" name=\"prettylights\" size=\"1\" value=\"" + (String) prettylights + "\"><input type=\"submit\" value=\"Pretty Lights!\">";
+  message += "</form>";
   message += "<form action=\"/\" method=\"get\">";
   message += "Amplitude <input type=\"text\" name=\"amplitude\" size=\"3\" value=\"" + (String) amplitude + "\"><input type=\"submit\" value=\"Submit\"> (0-255)";
   message += "</form>";
@@ -63,66 +133,4 @@ void handleNotFound(void)
 }
 
 
-void setupWiFi(void)
-{
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println();
-  Serial.print("Connected to ");
-  Serial.println(ssid);
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-}
 
-
-void setupWebServer(void)
-{
-  webServer.on("/", []() {
-    Serial.print("HTTP REQUEST > ");
-
-    for (uint8_t i = 0; i < webServer.args(); i++)
-    {
-      if (webServer.argName(i) == "frequency")
-      {
-        frequency = (byte) webServer.arg(i).toInt();
-      }
-      else if (webServer.argName(i) == "period")
-      {
-        period = (byte) webServer.arg(i).toInt();
-      }
-      else if (webServer.argName(i) == "brightness")
-      {
-        brightness = (byte) webServer.arg(i).toInt();
-      }
-      else if (webServer.argName(i) == "volume")
-      {
-        volume = (byte) webServer.arg(i).toInt();
-        updateVolume(volume);
-      }
-      else if (webServer.argName(i) == "fire")
-      {
-        fireLaser();
-      }
-      else
-      {
-        Serial.println("unknown argument! ");
-      }
-      Serial.print(webServer.argName(i));
-      Serial.print(": ");
-      Serial.print(webServer.arg(i));
-      Serial.print(" > ");
-    }
-    Serial.println("done");
-
-    showControlScreen();
-  });
-
-  webServer.onNotFound(handleNotFound);
-
-  webServer.begin();
-  Serial.println("HTTP server started");
-}

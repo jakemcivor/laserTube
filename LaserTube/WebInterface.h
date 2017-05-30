@@ -13,6 +13,7 @@ extern byte period;
 extern byte brightness;
 extern byte volume;
 extern byte fire;
+extern byte prettylights;
 
 extern ESP8266WebServer webServer;
 extern DNSServer dnsServer;
