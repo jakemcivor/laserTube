@@ -48,7 +48,8 @@ void setup() {
   Serial.println();
   Serial.println("Vancouver Hack Space Laser Tube " LASER_TUBE_VERSION);
 
-  setupWiFi();
+  setupAP();
+ // setupWiFi();
   setupWebServer();
   setupButton(); // setup physical interface button
   setupSound();
@@ -57,7 +58,8 @@ void setup() {
 }
 
 void loop() {
-  server.handleClient();
+  dnsServer.processNextRequest();
+  webServer.handleClient();
   handleButton();
   doSoundLoop();
   doScene();

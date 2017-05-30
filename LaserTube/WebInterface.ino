@@ -1,6 +1,25 @@
 #include "WebInterface.h"
 
-ESP8266WebServer server(80);
+//
+const byte DNS_PORT = 53;
+IPAddress apIP(192,168,1,1);
+DNSServer dnsServer;
+
+ESP8266WebServer webServer(80);
+
+
+// Function to set up wireless Access Point
+void setupAP(){
+    WiFi.mode(WIFI_AP);
+    WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
+    WiFi.softAP(softAP_ssid, softAP_password); //ssid and password from WiFiConfig.h
+
+  // if DNSServer is started with "*" for domain name, it will reply with
+  // provided IP to all DNS request
+  dnsServer.start(DNS_PORT, "*", apIP);
+  Serial.println("**** Access point started ");
+}
+
 
 void showControlScreen(void)
 {
@@ -23,24 +42,24 @@ void showControlScreen(void)
   message += "</form>";
   message += "</body>";
   message += "</html>";
-  server.send(200, "text/html", message);
+  webServer.send(200, "text/html", message);
 }
 
 void handleNotFound(void)
 {
   String message = "File Not Found\n\n";
   message += "URI: ";
-  message += server.uri();
+  message += webServer.uri();
   message += "\nMethod: ";
-  message += (server.method() == HTTP_GET) ? "GET" : "POST";
+  message += (webServer.method() == HTTP_GET) ? "GET" : "POST";
   message += "\nArguments: ";
-  message += server.args();
+  message += webServer.args();
   message += "\n";
-  for (uint8_t i=0; i<server.args(); i++)
+  for (uint8_t i=0; i<webServer.args(); i++)
   {
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+    message += " " + webServer.argName(i) + ": " + webServer.arg(i) + "\n";
   }
-  server.send(404, "text/plain", message);
+  webServer.send(404, "text/plain", message);
 }
 
 
@@ -62,29 +81,29 @@ void setupWiFi(void)
 
 void setupWebServer(void)
 {
-  server.on("/", []() {
+  webServer.on("/", []() {
     Serial.print("HTTP REQUEST > ");
 
-    for (uint8_t i = 0; i < server.args(); i++)
+    for (uint8_t i = 0; i < webServer.args(); i++)
     {
-      if (server.argName(i) == "frequency")
+      if (webServer.argName(i) == "frequency")
       {
-        frequency = (byte) server.arg(i).toInt();
+        frequency = (byte) webServer.arg(i).toInt();
       }
-      else if (server.argName(i) == "period")
+      else if (webServer.argName(i) == "period")
       {
-        period = (byte) server.arg(i).toInt();
+        period = (byte) webServer.arg(i).toInt();
       }
-      else if (server.argName(i) == "brightness")
+      else if (webServer.argName(i) == "brightness")
       {
-        brightness = (byte) server.arg(i).toInt();
+        brightness = (byte) webServer.arg(i).toInt();
       }
-      else if (server.argName(i) == "volume")
+      else if (webServer.argName(i) == "volume")
       {
-        volume = (byte) server.arg(i).toInt();
+        volume = (byte) webServer.arg(i).toInt();
         updateVolume(volume);
       }
-      else if (server.argName(i) == "fire")
+      else if (webServer.argName(i) == "fire")
       {
         fireLaser();
       }
@@ -92,9 +111,9 @@ void setupWebServer(void)
       {
         Serial.println("unknown argument! ");
       }
-      Serial.print(server.argName(i));
+      Serial.print(webServer.argName(i));
       Serial.print(": ");
-      Serial.print(server.arg(i));
+      Serial.print(webServer.arg(i));
       Serial.print(" > ");
     }
     Serial.println("done");
@@ -102,8 +121,8 @@ void setupWebServer(void)
     showControlScreen();
   });
 
-  server.onNotFound(handleNotFound);
+  webServer.onNotFound(handleNotFound);
 
-  server.begin();
+  webServer.begin();
   Serial.println("HTTP server started");
 }
