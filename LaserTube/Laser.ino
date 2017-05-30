@@ -97,7 +97,7 @@ void keepOnLasing(void)
 void sceneIdle() {
     // idle loop when nothing else is happening
   count++;
-
+  
   if (count % iterationCount == 0) {
     Serial.println("-- idle");
   }
@@ -210,7 +210,7 @@ void sceneFiring() {
 
   for (int i = 0; i < NUM_LEDS; i++) {
     int currentLED = count % NUM_LEDS;
-    if (i >= currentLED + 5 || i <= currentLED - 5) {
+    if (i >= currentLED + 3 || i <= currentLED - 3) {
       r = 0; g = 0; b = map(laserTimer, sceneStartMillis, sceneEnd, 255, 0);
      } else {
       r = 0; g = 0; b = 0;
