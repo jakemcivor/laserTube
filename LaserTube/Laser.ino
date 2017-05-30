@@ -14,6 +14,7 @@ const int SCENE_FIRING = 4;
 
 long laserTimer;
 
+define CHARGE_LENGTH 20 // number of pixels in charging section
 
 int sceneBrightness = 1;
 int r = 32;
@@ -124,6 +125,7 @@ void sceneCharging() {
   //int intensity = count % NUM_LEDS;
 
   if (sceneBrightness < 32) { pixels.setBrightness(32); sceneBrightness = 32; }
+  int progr
 
   int sceneBrightness = map(millis(), sceneStartMillis, sceneEnd, 32, 255);
   for (int i = 0; i < NUM_LEDS; i++) {
