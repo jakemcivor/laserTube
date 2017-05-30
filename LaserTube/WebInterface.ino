@@ -1,7 +1,6 @@
 #include "WebInterface.h"
 
 //
-#define LASERTUBE_AP "VHS LaserTube"
 const byte DNS_PORT = 53;
 IPAddress apIP(192,168,1,1);
 DNSServer dnsServer;
@@ -13,7 +12,7 @@ ESP8266WebServer webServer(80);
 void setupAP(){
     WiFi.mode(WIFI_AP);
     WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-    WiFi.softAP(LASERTUBE_AP);
+    WiFi.softAP(softAP_ssid, softAP_password); //ssid and password from WiFiConfig.h
 
   // if DNSServer is started with "*" for domain name, it will reply with
   // provided IP to all DNS request
