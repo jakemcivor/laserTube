@@ -35,7 +35,7 @@ byte frequency = 10; //todo unused
 byte period = 4; //todo unused
 
 // VOLUME: Sound volume. Range  0 - 30
-byte volume = 15;
+byte volume = 25;
 
 // BRIGHTNESS: Pixel Brightness
 byte brightness = 128; 
@@ -316,7 +316,7 @@ void rainbowCycle(uint8_t wait) {
       pixels.setPixelColor(i, Wheel(((i * 256 / pixels.numPixels()) + j) & 255));
     }
     pixels.show();
-    //delay(wait);
+    delay(wait);
   }
 }
 

@@ -36,7 +36,7 @@
 
 #define SCENE_CHARGING_LEN_MS 6500 //length of charging sounds
 #define SCENE_CHARGED_LEN_MS 0
-#define SCENE_FIRING_LEN_MS 1253
+#define SCENE_FIRING_LEN_MS 1100 //actual sound 1253
 #define SCENE_COOLDOWN_LEN_MS 5000 //
 
 #define SCENE_CHARGING_INDEX 23 //index for charging sounds e.g. 0023_xxxxx.wav
